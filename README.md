@@ -31,4 +31,4 @@ Once the app is running, you can open your favourite browser and connect to:
 # Práctica 2 - To Do List App
 
 ## Gestión del Proyecto
-* **Tablero de Trello:** [Trello de Jaume](https://trello.com/invite/b/69c17bf4bf42df3ed5f70ff9/ATTI2b4f2df2276f5facd311881f5929986a5247FB11/mi-tablero-de-trello)
+* **Tablero de Trello:** [Trello de Jaume](https://trello.com/invite/b/69c17dd42a091f9f6b5da618/ATTI9af45cad8452f31af5004f2c5bd3213b9EA8A9C4/p2-to-do-list-app)
