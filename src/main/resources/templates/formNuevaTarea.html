@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: head (titulo='Login')"></head>
+<head th:replace="fragments :: head (titulo='Nueva Tarea')"></head>
 
 <body>
-<div class="container-fluid">
+<nav th:replace="fragments :: menu"></nav>
 
-    <h2 th:text="'Nueva tarea para el usuario ' + ${usuario.getNombre()}"></h2>
+<div class="container"> <h2 class="mb-4" th:text="'Nueva tarea para ' + ${usuario.nombre}"></h2>
 
     <form method="post" th:action="@{/usuarios/{id}/tareas/nueva(id=${usuario.id})}" th:object="${tareaData}">
-        <div class="col-6">
-        <div class="form-group">
+        <div class="col-md-6 px-0"> <div class="form-group">
             <label for="titulo">Título de la tarea:</label>
-            <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
+            <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text" placeholder="Ej: Comprar pan"/>
         </div>
-        <button class="btn btn-primary" type="submit">Crear tarea</button>
-        <a class="btn btn-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Cancelar</a>
+            <button class="btn btn-primary" type="submit">Crear tarea</button>
+            <a class="btn btn-secondary" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Cancelar</a>
         </div>
     </form>
 </div>
 
-<div th:replace="fragments::javascript"/>
 
 </body>
 </html>

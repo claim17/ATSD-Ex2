@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments :: head (titulo='Sobre la Aplicación')"></head>
+
+  <body>
+    <nav th:replace="fragments :: menu"></nav>
+
+    <div class="container mt-5">
+      <div class="jumbotron">
+        <h1 class="display-4">To-Do List App</h1>
+        <p class="lead">Esta es una aplicación de gestión de tareas desarrollada para la asignatura de ATSD.</p>
+        <hr class="my-4">
+
+        <h3>Información del Proyecto</h3>
+        <ul>
+          <li><strong>Autor:</strong> Jaume Climent</li>
+          <li><strong>Titulación:</strong> Ingeniería Informática</li>
+          <li><strong>Versión:</strong> 1.1.0 (Desarrollo de Menú y Usuarios)</li>
+        </ul>
+
+        <div class="alert alert-info mt-4">
+          Esta versión incluye navegación dinámica y listado de usuarios registrados.
+        </div>
+
+        <div class="mt-4">
+          <a th:if="${session.idUsuarioLogeado == null}"
+             class="btn btn-primary btn-lg" th:href="@{/login}">Ir al Login</a>
+
+          <a th:if="${session.idUsuarioLogeado != null}"
+             class="btn btn-success btn-lg" th:href="@{/usuarios/{id}/tareas(id=${session.idUsuarioLogeado})}">Volver a mis Tareas</a>
+        </div>
+
+      </div>
+    </div>
+
+
 </body>
 </html>

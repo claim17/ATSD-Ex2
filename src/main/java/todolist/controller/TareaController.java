@@ -36,13 +36,17 @@ public class TareaController {
 
     @GetMapping("/usuarios/{id}/tareas/nueva")
     public String formNuevaTarea(@PathVariable(value="id") Long idUsuario,
-                                 @ModelAttribute TareaData tareaData, Model model,
+                                 Model model, // Quitamos el ModelAttribute del parámetro
                                  HttpSession session) {
 
         comprobarUsuarioLogeado(idUsuario);
 
         UsuarioData usuario = usuarioService.findById(idUsuario);
         model.addAttribute("usuario", usuario);
+
+        // ESTO ASEGURA QUE THYMELEAF TENGA EL OBJETO PARA EL th:object
+        model.addAttribute("tareaData", new TareaData());
+
         return "formNuevaTarea";
     }
 
@@ -71,7 +75,7 @@ public class TareaController {
     }
 
     @GetMapping("/tareas/{id}/editar")
-    public String formEditaTarea(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
+    public String formEditaTarea(@PathVariable(value="id") Long idTarea,
                                  Model model, HttpSession session) {
 
         TareaData tarea = tareaService.findById(idTarea);
@@ -81,8 +85,12 @@ public class TareaController {
 
         comprobarUsuarioLogeado(tarea.getUsuarioId());
 
-        model.addAttribute("tarea", tarea);
+        // Creamos el DTO que va a usar el formulario
+        TareaData tareaData = new TareaData();
         tareaData.setTitulo(tarea.getTitulo());
+
+        model.addAttribute("tarea", tarea);
+        model.addAttribute("tareaData", tareaData); // Lo pasamos explícitamente
         return "formEditarTarea";
     }
 
