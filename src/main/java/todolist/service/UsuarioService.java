@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 @Service
@@ -72,4 +75,17 @@ public class UsuarioService {
             return modelMapper.map(usuario, UsuarioData.class);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> findAll() {
+        // 1. Buscamos todas las entidades en la BD
+        List<Usuario> usuarios = (List<Usuario>) usuarioRepository.findAll();
+
+        // 2. Las convertimos a DTO (UsuarioData) para la vista
+        return usuarios.stream()
+                .map(u -> modelMapper.map(u, UsuarioData.class))
+                .collect(Collectors.toList());
+    }
+
+
 }

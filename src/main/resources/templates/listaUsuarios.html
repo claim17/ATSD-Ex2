@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head (titulo='Listado de Usuarios')"></head>
+<body>
+<nav th:replace="fragments :: menu"></nav>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Usuarios registrados en el sistema</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="table table-hover table-bordered shadow-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${usuarios}">
+                    <td th:text="${u.id}"></td>
+                    <td th:text="${u.email}"></td>
+                    <td>
+                        <a class="btn btn-info btn-sm" th:href="@{/registered/{id}(id=${u.id})}">
+                            Ver perfil completo
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
