@@ -87,5 +87,18 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void cambiarEstadoBloqueo(Long id) {
+        // 1. Buscamos el usuario en la base de datos
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+
+        if (usuario != null) {
+            // 2. Le damos la vuelta al booleano: si es true pasa a false y viceversa
+            usuario.setBloqueado(!usuario.isBloqueado());
+
+            // 3. Guardamos los cambios
+            usuarioRepository.save(usuario);
+        }
+    }
 
 }

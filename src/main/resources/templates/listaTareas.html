@@ -6,6 +6,13 @@
 <body>
 <nav th:replace="fragments :: menu"></nav>
 
+<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span th:text="${error}"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
 <div class="container mt-5"> <div class="row mb-4">
     <div class="col">
         <h2 th:text="'Listado de tareas de ' + ${usuario.nombre}"></h2>

@@ -39,15 +39,26 @@ public class LoginController {
     @PostMapping("/login")
     public String loginSubmit(@ModelAttribute LoginData loginData, Model model, HttpSession session) {
 
-        // Llamada al servicio para comprobar si el login es correcto
+        // 1. Comprobamos credenciales
         UsuarioService.LoginStatus loginStatus = usuarioService.login(loginData.geteMail(), loginData.getPassword());
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {
             UsuarioData usuario = usuarioService.findByEmail(loginData.geteMail());
 
+            // 2. FILTRO DE BLOQUEO (Para nota máxima)
+            if (usuario.isBloqueado()) {
+                model.addAttribute("error", "Tu cuenta ha sido deshabilitada por el administrador.");
+                return "formLogin";
+            }
+
+            // 3. Si todo ok, logueamos
             managerUserSession.logearUsuario(usuario.getId());
 
+            // Guardamos si es admin en la sesión para los fragments/navbar
+            session.setAttribute("esAdmin", usuario.isAdmin());
+
             return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
             model.addAttribute("error", "No existe usuario");
             return "formLogin";
@@ -64,8 +75,8 @@ public class LoginController {
         return "formRegistro";
     }
 
-   @PostMapping("/registro")
-   public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
+    @PostMapping("/registro")
+    public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
             return "formRegistro";
@@ -85,11 +96,12 @@ public class LoginController {
 
         usuarioService.registrar(usuario);
         return "redirect:/login";
-   }
+    }
 
-   @GetMapping("/logout")
-   public String logout(HttpSession session) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
         managerUserSession.logout();
+        session.removeAttribute("esAdmin");
         return "redirect:/login";
-   }
+    }
 }

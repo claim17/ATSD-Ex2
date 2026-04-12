@@ -29,6 +29,11 @@ public class InitDbService {
         usuario.setPassword("1234");
         usuarioRepository.save(usuario);
 
+        Usuario admin = new Usuario("admin@todolist.com");
+        admin.setPassword("1234");
+        admin.setAdmin(true); // <--- ESTO le da el rol
+        usuarioRepository.save(admin);
+
         Tarea tarea1 = new Tarea(usuario, "Create the GNU General Public License");
         tareaRepository.save(tarea1);
 

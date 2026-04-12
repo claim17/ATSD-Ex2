@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.transaction.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Sql(scripts = "/clean-db.sql")
@@ -152,5 +155,32 @@ public class UsuarioServiceTest {
         assertThat(usuario.getId()).isEqualTo(usuarioId);
         assertThat(usuario.getEmail()).isEqualTo("richard@umh.es");
         assertThat(usuario.getNombre()).isEqualTo("Richard Stallman");
+    }
+
+    @Test
+    @Transactional
+    public void testAdminPuedeBloquearUsuario() {
+        // 1. Creamos los datos nosotros mismos para que el test no dependa de nadie
+        UsuarioData adminData = new UsuarioData();
+        adminData.setEmail("admin_test@todolist.com");
+        adminData.setPassword("1234");
+        adminData.setAdmin(true); // Le damos rango de admin
+        usuarioService.registrar(adminData);
+
+        UsuarioData userToBanData = new UsuarioData();
+        userToBanData.setEmail("user_test@todolist.com");
+        userToBanData.setPassword("1234");
+        usuarioService.registrar(userToBanData);
+
+        // 2. Recuperamos al usuario que vamos a banear
+        UsuarioData usuario = usuarioService.findByEmail("user_test@todolist.com");
+        boolean estadoInicial = usuario.isBloqueado();
+
+        // 3. Ejecutamos tu lógica de baneo
+        usuarioService.cambiarEstadoBloqueo(usuario.getId());
+
+        // 4. Comprobamos que el estado ha cambiado
+        UsuarioData usuarioPost = usuarioService.findByEmail("user_test@todolist.com");
+        assertNotEquals(estadoInicial, usuarioPost.isBloqueado(), "El baneo debería haber cambiado el estado");
     }
 }
