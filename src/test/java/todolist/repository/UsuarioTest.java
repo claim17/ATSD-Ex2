@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Sql(scripts = "/clean-db.sql")
@@ -170,5 +172,17 @@ public class UsuarioTest {
         // se obtiene el usuario correcto.
 
         assertThat(usuarioBD.getNombre()).isEqualTo("Richard Stallman");
+    }
+
+    @Test
+    @Transactional
+    public void testSaveBloqueado() {
+        Usuario usuario = new Usuario("test@bloqueo.com");
+        usuario.setBloqueado(true);
+        usuarioRepository.save(usuario);
+
+        Usuario recuperado = usuarioRepository.findByEmail("test@bloqueo.com").orElse(null);
+        assertNotNull(recuperado);
+        assertTrue(recuperado.isBloqueado());
     }
 }

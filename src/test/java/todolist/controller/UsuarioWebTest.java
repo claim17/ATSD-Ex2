@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -92,5 +93,18 @@ public class UsuarioWebTest {
                         .param("eMail","ana.garcia@gmail.com")
                         .param("password","000"))
                 .andExpect(content().string(containsString("Contraseña incorrecta")));
+    }
+
+    @Test
+    public void testAccesoListaUsuariosSoloAdmin() throws Exception {
+        // Simulamos una sesión de ADMIN
+        this.mockMvc.perform(get("/registered")
+                        .sessionAttr("esAdmin", true))
+                .andExpect(status().isOk());
+
+        // Simulamos una sesión de NO ADMIN (debería redirigir)
+        this.mockMvc.perform(get("/registered")
+                        .sessionAttr("esAdmin", false))
+                .andExpect(status().is3xxRedirection());
     }
 }

@@ -65,4 +65,19 @@ public class UsuarioData {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+    private boolean admin;
+
+    public boolean isAdmin() { return admin; }
+    public void setAdmin(boolean admin) { this.admin = admin; }
+
+    private boolean bloqueado = false;
+
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
 }

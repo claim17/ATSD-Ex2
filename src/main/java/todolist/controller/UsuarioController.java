@@ -5,11 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import todolist.dto.UsuarioData;
 import todolist.service.UsuarioService;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+
+
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UsuarioController {
@@ -17,23 +21,28 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // LISTADO DE USUARIOS
     @GetMapping("/registered")
-    public String listadoUsuarios(Model model, HttpSession session) {
-        // SEGURIDAD: Si no hay nadie logueado, al login
-        if (session.getAttribute("idUsuarioLogeado") == null) {
-            return "redirect:/login";
+    public String listadoUsuarios(Model model, HttpSession session, RedirectAttributes flash) {
+        Boolean esAdmin = (Boolean) session.getAttribute("esAdmin");
+
+        if (esAdmin == null || !esAdmin) {
+            Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+            // Añadimos el mensaje de error que viajará a la página de tareas
+            flash.addFlashAttribute("error", "Acceso denegado: No tienes permisos de administrador.");
+
+            return (id != null) ? "redirect:/usuarios/" + id + "/tareas" : "redirect:/login";
         }
 
-        List<UsuarioData> usuarios = usuarioService.findAll();
-        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("usuarios", usuarioService.findAll());
         return "listaUsuarios";
     }
 
-    // DETALLE DE UN USUARIO (Lo dejamos ya preparado)
     @GetMapping("/registered/{id}")
     public String detalleUsuario(@PathVariable Long id, Model model, HttpSession session) {
-        if (session.getAttribute("idUsuarioLogeado") == null) {
+        Boolean esAdmin = (Boolean) session.getAttribute("esAdmin");
+
+        if (esAdmin == null || !esAdmin) {
             return "redirect:/login";
         }
 
@@ -44,5 +53,14 @@ public class UsuarioController {
 
         model.addAttribute("usuarioDetalle", usuario);
         return "detalleUsuario";
+    }
+
+    @PostMapping("/usuarios/{id}/bloquear")
+    public String bloquearUsuario(@PathVariable Long id, HttpSession session) {
+        Boolean esAdmin = (Boolean) session.getAttribute("esAdmin");
+        if (esAdmin == null || !esAdmin) return "redirect:/login";
+
+        usuarioService.cambiarEstadoBloqueo(id);
+        return "redirect:/registered";
     }
 }

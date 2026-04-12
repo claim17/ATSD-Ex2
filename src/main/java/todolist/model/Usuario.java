@@ -116,4 +116,21 @@ public class Usuario implements Serializable {
         // Generamos un hash basado en los campos obligatorios
         return Objects.hash(email);
     }
+
+    private boolean admin = false; // Por defecto nadie es admin
+
+    public boolean isAdmin() { return admin; }
+    public void setAdmin(boolean admin) { this.admin = admin; }
+
+    private boolean bloqueado = false;
+
+    // Getter: Nota que para booleanos se suele usar 'is' en lugar de 'get'
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    // Setter
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
 }

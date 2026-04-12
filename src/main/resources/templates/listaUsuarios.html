@@ -30,6 +30,19 @@
                             Ver perfil completo
                         </a>
                     </td>
+                    <td>
+                        <span th:class="${u.bloqueado} ? 'badge badge-danger' : 'badge badge-success'"
+                              th:text="${u.bloqueado} ? 'Bloqueado' : 'Activo'"></span>
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" th:href="@{/registered/{id}(id=${u.id})}">Ver Perfil</a>
+
+                        <form th:action="@{/usuarios/{id}/bloquear(id=${u.id})}" method="post" style="display:inline;">
+                            <button type="submit"
+                                    th:class="${u.bloqueado} ? 'btn btn-sm btn-success' : 'btn btn-sm btn-danger'"
+                                    th:text="${u.bloqueado} ? 'Desbloquear' : 'Bloquear'"></button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
